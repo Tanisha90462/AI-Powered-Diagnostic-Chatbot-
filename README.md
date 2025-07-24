@@ -32,5 +32,4 @@ An AI-powered healthcare chatbot designed for rural and underserved communities.
 
 📍PPT:
 
-
-https://1drv.ms/p/c/0753ce7bc1ad7bf8/EQUX6evOvThKj5RKL1guaEsBBNWHVcpBzdrDnP2YWkNNGQ?e=cbddgu
+[final_ppt_for_learnathon.pdf](https://github.com/user-attachments/files/21417706/final_ppt_for_learnathon.pdf)
