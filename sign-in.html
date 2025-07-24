@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthBot - Login & Registration</title>
+    <style>
+        /* General Reset & Body Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            /* Background with gradient and subtle SVG pattern for a healthcare feel */
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%234CAF50;stop-opacity:0.1"/><stop offset="100%" style="stop-color:%232196F3;stop-opacity:0.1"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23bg)"/><g fill="white" opacity="0.1"><circle cx="200" cy="150" r="60"/><circle cx="800" cy="200" r="40"/><circle cx="1000" cy="400" r="80"/><circle cx="300" cy="600" r="50"/><path d="M100,300 Q300,200 500,300 T900,300" stroke="white" stroke-width="2" fill="none"/><path d="M200,500 Q400,400 600,500 T1000,500" stroke="white" stroke-width="2" fill="none"/><rect x="150" y="100" width="30" height="30" rx="5" transform="rotate(45 165 115)"/><rect x="750" y="350" width="25" height="25" rx="4" transform="rotate(45 762.5 362.5)"/><rect x="450" y="150" width="20" height="20" rx="3" transform="rotate(45 460 160)"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main Container Styling */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px); /* Frosted glass effect */
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+            position: relative;
+        }
+
+        /* Left Panel (Marketing/Features) */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); /* Green gradient */
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background for left panel */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><g fill="white" opacity="0.1"><circle cx="100" cy="100" r="30"/><circle cx="300" cy="150" r="20"/><circle cx="200" cy="300" r="40"/><path d="M50,200 Q150,100 250,200 T350,200" stroke="white" stroke-width="2" fill="none"/><rect x="80" y="250" width="15" height="15" rx="2" transform="rotate(45 87.5 257.5)"/><rect x="320" y="80" width="12" height="12" rx="2" transform="rotate(45 326 86)"/></g></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .brand-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features li {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features li::before {
+            content: '✓';
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Right Panel (Forms) */
+        .right-panel {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .required {
+            color: #f44336;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Validation Feedback */
+        input.error, select.error {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        input.success, select.success {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2em;
+            user-select: none;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #f44336; width: 25%; }
+        .strength-fair { background: #ff9800; width: 50%; }
+        .strength-good { background: #2196f3; width: 75%; }
+        .strength-strong { background: #4CAF50; width: 100%; }
+
+        .strength-text {
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        /* Footer & Auth Switch */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .auth-switch {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .auth-switch:hover {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Form Visibility Toggle */
+        .login-form {
+            display: none; /* Hidden by default */
+        }
+
+        .signup-form {
+            display: block; /* Shown by default */
+        }
+
+        .show {
+            display: block;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(100px) translateY(100px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                max-width: 100%;
+                margin: 10px;
+            }
+
+            .left-panel {
+                min-height: 200px;
+                padding: 30px 20px;
+            }
+
+            .brand-name {
+                font-size: 2em;
+            }
+
+            .logo {
+                font-size: 2em;
+            }
+
+            .right-panel {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        /* Tooltip for Aadhar */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #4CAF50;
+            margin-left: 5px;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Message Box for alerts */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            text-align: center;
+            font-size: 1.1em;
+            max-width: 300px;
+        }
+
+        .message-box.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">🏥</div>
+            <div class="brand-name">HealthBot AI</div>
+            <div class="tagline">
+                Revolutionizing rural healthcare with AI-powered diagnosis and real-time medical assistance
+            </div>
+            <ul class="features">
+                <li>AI-Powered Symptom Analysis</li>
+                <li>Multilingual Support</li>
+                <li>24/7 Healthcare Assistance</li>
+                <li>Doctor Referral Network</li>
+                <li>Emergency Response System</li>
+                <li>Secure Health Records</li>
+            </ul>
+        </div>
+
+        <div class="right-panel">
+            <!-- Sign Up Form -->
+            <div class="form-container signup-form" id="signupForm">
+                <div class="form-header">
+                    <h2 class="form-title">Create Account</h2>
+                    <p class="form-subtitle">Join our healthcare community and get personalized AI assistance</p>
+                </div>
+
+                <form id="registrationForm" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required>
+                            <div class="error-message" id="firstNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required>
+                            <div class="error-message" id="lastNameError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age <span class="required">*</span></label>
+                            <input type="number" id="age" name="age" min="1" max="120" required>
+                            <div class="error-message" id="ageError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender <span class="required">*</span></label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                            <div class="error-message" id="genderError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aadhar">
+                            Aadhar Number <span class="required">*</span>
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">12-digit unique identification number issued by UIDAI (e.g., XXXX XXXX XXXX)</span>
+                            </span>
+                        </label>
+                        <input type="text" id="aadhar" name="aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        <div class="error-message" id="aadharError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required>
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <div class="password-container">
+                            <input type="password" id="password" name="password" required>
+                            <span class="password-toggle" onclick="togglePassword('password')">👁️</span>
+                        </div>
+                        <div class="password-strength" id="passwordStrength" style="display: none;">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText"></div>
+                        </div>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                        <div class="password-container">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <span class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</span>
+                        </div>
+                        <div class="error-message" id="confirmPasswordError"></div>
+                        <div class="success-message" id="confirmPasswordSuccess"></div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="signupBtn" href="index.html">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="footer">
+                    <p>Already have an account?</p>
+                    <a href="#" class="auth-switch" onclick="switchToLogin()">Sign In</a>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <div class="form-container login-form" id="loginForm">
+                <div class="form-header">
+                    <h2 class="form-title">Welcome Back</h2>
+                    <p class="form-subtitle">Sign in to access your healthcare dashboard</p>
+                </div>
+
+                <form id="loginFormElement" novalidate>
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address <span class="required">*</span></label>
+                        <input type="email" id="loginEmail" name="loginEmail" required>
+                        <div class="error-message" id="loginEmailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password <span class="required">*</span></label>
+                        <div class="password-container">
+                            <input type="password" id="loginPassword" name="loginPassword" required>
+                            <span class="password-toggle" onclick="togglePassword('loginPassword')">👁️</span>
+                        </div>
+                        <div class="error-message" id="loginPasswordError"></div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="loginBtn" href="index.html">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="footer">
+                    <p>Don't have an account?</p>
+                    <a href="#" class="auth-switch" onclick="switchToSignup()">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        // Global function to toggle password visibility
+        // Global function to toggle password visibility
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    const icon = input.nextElementSibling; // The span element with the eye icon
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = '🙈'; // Closed eye icon
+    } else {
+        input.type = 'password';
+        icon.textContent = '👁️'; // Open eye icon
+    }
+}
+
+// Main HealthcareAuth class to handle all form logic
+class HealthcareAuth {
+    constructor() {
+        this.users = JSON.parse(localStorage.getItem('healthcareUsers') || '[]');
+        this.loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null'); // Track logged-in user
+        this.setupEventListeners();
+        // Determine which form to show initially
+        if (this.loggedInUser) {
+            this.showMessageBox(`Welcome back, ${this.loggedInUser.firstName}! You are already logged in.`, 'success');
+            // Optionally, redirect to index.html or display a logged-in state
+            // For now, let's keep showing login form but make login button a "Sign Out"
+            this.switchToLogin(); // show login form but indicate logged in
+            this.updateAuthButton();
+        } else {
+            this.switchToSignup();
+        }
+    }
+
+    setupEventListeners() {
+        // Form submissions
+        document.getElementById('registrationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleSignup();
+        });
+
+        document.getElementById('loginFormElement').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // If user is already logged in, this button becomes "Sign Out"
+            if (this.loggedInUser) {
+                this.handleLogout();
+            } else {
+                this.handleLogin();
+            }
+        });
+
+        // Real-time validation for signup form fields
+        this.setupRealTimeValidation();
+        this.updateAuthButton(); // Initial state for login/logout button
+    }
+
+    setupRealTimeValidation() {
+        // Name validation
+        ['firstName', 'lastName'].forEach(field => {
+            document.getElementById(field).addEventListener('input', (e) => {
+                this.validateName(e.target);
+            });
+        });
+
+        // Age validation
+        document.getElementById('age').addEventListener('input', (e) => {
+            this.validateAge(e.target);
+        });
+
+        // Gender validation
+        document.getElementById('gender').addEventListener('change', (e) => {
+            this.validateGender(e.target);
+        });
+
+        // Aadhar validation
+        document.getElementById('aadhar').addEventListener('input', (e) => {
+            this.validateAadhar(e.target);
+        });
+
+        // Email validation
+        document.getElementById('email').addEventListener('input', (e) => {
+            this.validateEmail(e.target);
+        });
+        document.getElementById('loginEmail').addEventListener('input', (e) => {
+            this.validateEmail(e.target); // Re-use for login email
+        });
+
+        // Phone validation
+        document.getElementById('phone').addEventListener('input', (e) => {
+            this.validatePhone(e.target);
+        });
+
+        // Password validation and strength
+        document.getElementById('password').addEventListener('input', (e) => {
+            this.validatePassword(e.target);
+            this.checkPasswordMatch(); // Check match whenever password changes
+        });
+
+        // Confirm password validation
+        document.getElementById('confirmPassword').addEventListener('input', (e) => {
+            this.checkPasswordMatch();
+        });
+
+        // Login password validation (basic required check)
+        document.getElementById('loginPassword').addEventListener('input', (e) => {
+            this.validateField(e.target, document.getElementById('loginPasswordError'), 'Password is required.');
+        });
+    }
+
+    // Utility function to show error messages
+    showError(inputElement, errorElement, message) {
+        inputElement.classList.add('error');
+        inputElement.classList.remove('success');
+        errorElement.textContent = `❌ ${message}`;
+        errorElement.style.display = 'flex';
+        // Clear success message if any
+        const successElement = document.getElementById(inputElement.id + 'Success');
+        if (successElement) {
+            successElement.textContent = '';
+            successElement.style.display = 'none';
+        }
+    }
+
+    // Utility function to show success feedback
+    showSuccess(inputElement, errorElement, message = '') {
+        inputElement.classList.remove('error');
+        inputElement.classList.add('success');
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+        // Display success message if provided
+        const successElement = document.getElementById(inputElement.id + 'Success');
+        if (successElement && message) {
+            successElement.textContent = `✅ ${message}`;
+            successElement.style.display = 'flex';
+        } else if (successElement) { // Clear success message if no message provided
+            successElement.textContent = '';
+            successElement.style.display = 'none';
+        }
+    }
+
+    // General validation for required fields
+    validateField(input, errorElement, errorMessage) {
+        if (!input.value.trim()) {
+            this.showError(input, errorElement, errorMessage);
+            return false;
+        }
+        this.showSuccess(input, errorElement);
+        return true;
+    }
+
+    validateName(input) {
+        const name = input.value.trim();
+        const errorElement = document.getElementById(input.id + 'Error');
+
+        if (!name) {
+            this.showError(input, errorElement, 'This field is required');
+            return false;
+        } else if (name.length < 2) {
+            this.showError(input, errorElement, 'Name must be at least 2 characters');
+            return false;
+        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+            this.showError(input, errorElement, 'Name can only contain letters and spaces');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+    validateAge(input) {
+        const age = parseInt(input.value);
+        const errorElement = document.getElementById('ageError');
+
+        if (!input.value) {
+            this.showError(input, errorElement, 'Age is required');
+            return false;
+        } else if (isNaN(age) || age < 1 || age > 120) {
+            this.showError(input, errorElement, 'Please enter a valid age (1-120)');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+    validateGender(input) {
+        const gender = input.value;
+        const errorElement = document.getElementById('genderError');
+
+        if (!gender) {
+            this.showError(input, errorElement, 'Please select your gender');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+    validateAadhar(input) {
+        let aadhar = input.value.replace(/\s/g, ''); // Remove existing spaces for validation
+        const errorElement = document.getElementById('aadharError');
+
+        // Format as user types (add spaces after every 4 digits)
+        if (aadhar.length > 0) {
+            aadhar = aadhar.match(new RegExp('.{1,4}', 'g')).join(' ');
+            input.value = aadhar;
+        }
+
+        const cleanAadhar = input.value.replace(/\s/g, ''); // Get cleaned Aadhar for validation
+
+        if (!cleanAadhar) {
+            this.showError(input, errorElement, 'Aadhar number is required');
+            return false;
+        }
+        // Aadhar regex: starts with 2-9, followed by 11 digits.
+        const aadharRegex = /^[2-9]\d{11}$/; // For the cleaned 12-digit number
+
+        if (!aadharRegex.test(cleanAadhar)) {
+            this.showError(input, errorElement, 'Aadhar number must be 12 digits, start with 2-9, and contain only numbers.');
+            return false;
+        }
+        // Note: Full Aadhar checksum validation (Verhoeff algorithm) is complex and
+        // typically done server-side for true verification. For this client-side demo,
+        // we rely on format and length.
+        this.showSuccess(input, errorElement);
+        return true;
+    }
+
+    validateEmail(input) {
+        const email = input.value.trim();
+        const errorElement = document.getElementById(input.id + 'Error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email) {
+            this.showError(input, errorElement, 'Email is required');
+            return false;
+        } else if (!emailRegex.test(email)) {
+            this.showError(input, errorElement, 'Please enter a valid email address');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+    validatePhone(input) {
+        let phone = input.value.replace(/\D/g, ''); // Remove non-digits
+        const errorElement = document.getElementById('phoneError');
+
+        // Format as user types to +91 XXXXX XXXXX
+        if (phone.length > 0) {
+            // Ensure it starts with 91 if it's an Indian number
+            if (!phone.startsWith('91') && phone.length >= 10) {
+                phone = '91' + phone.substring(0, 10); // Prepend 91 if not present and 10 digits
+            }
+            if (phone.startsWith('91')) {
+                let formatted = '+91';
+                if (phone.length > 2) formatted += ' ' + phone.slice(2, 7);
+                if (phone.length > 7) formatted += ' ' + phone.slice(7, 12);
+                input.value = formatted;
+            } else {
+                // For non-Indian numbers or if user types a different format initially
+                input.value = phone;
+            }
+        }
+
+        const cleanPhone = input.value.replace(/\D/g, ''); // Get cleaned phone for validation
+
+        // Validate Indian phone numbers: Must be 12 digits including '91' prefix (total 10 digits after + sign)
+        const phoneRegex = /^91[6789]\d{9}$/; // Starts with 91, then 6/7/8/9, then 9 more digits (10 total after 91)
+
+        if (!cleanPhone) {
+            this.showError(input, errorElement, 'Phone number is required');
+            return false;
+        } else if (!phoneRegex.test(cleanPhone)) {
+            this.showError(input, errorElement, 'Please enter a valid 10-digit Indian phone number (e.g., +91 98765 12345).');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+
+    validatePassword(input) {
+        const password = input.value;
+        const errorElement = document.getElementById('passwordError');
+        const strengthDiv = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        strengthDiv.style.display = 'block';
+
+        let score = 0;
+        let text = 'Very Weak';
+        let className = 'strength-weak';
+
+        // Criteria for strength (you can adjust these)
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/\d/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++; // Special characters
+
+        if (score === 0) {
+            text = 'Very Weak';
+            className = 'strength-weak';
+            strengthFill.style.width = '0%';
+        } else if (score <= 2) {
+            text = 'Weak';
+            className = 'strength-weak';
+            strengthFill.style.width = '25%';
+        } else if (score === 3) {
+            text = 'Fair';
+            className = 'strength-fair';
+            strengthFill.style.width = '50%';
+        } else if (score === 4) {
+            text = 'Good';
+            className = 'strength-good';
+            strengthFill.style.width = '75%';
+        } else if (score >= 5) {
+            text = 'Strong';
+            className = 'strength-strong';
+            strengthFill.style.width = '100%';
+        }
+
+        strengthText.textContent = text;
+        strengthFill.className = 'strength-fill ' + className;
+
+        if (!password) {
+            this.showError(input, errorElement, 'Password is required');
+            strengthDiv.style.display = 'none'; // Hide strength if no password
+            return false;
+        } else if (password.length < 8) {
+            this.showError(input, errorElement, 'Password must be at least 8 characters long');
+            return false;
+        } else {
+            this.showSuccess(input, errorElement);
+            return true;
+        }
+    }
+
+    checkPasswordMatch() {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const confirmPasswordSuccess = document.getElementById('confirmPasswordSuccess');
+
+        if (confirmPasswordInput.value === '') {
+            this.showError(confirmPasswordInput, confirmPasswordError, 'Please confirm your password.');
+            return false;
+        } else if (passwordInput.value !== confirmPasswordInput.value) {
+            this.showError(confirmPasswordInput, confirmPasswordError, 'Passwords do not match.');
+            return false;
+        } else {
+            this.showSuccess(confirmPasswordInput, confirmPasswordError, 'Passwords match!');
+            return true;
+        }
+    }
+
+    validateSignupForm() {
+        let isValid = true;
+        isValid = this.validateName(document.getElementById('firstName')) && isValid;
+        isValid = this.validateName(document.getElementById('lastName')) && isValid;
+        isValid = this.validateAge(document.getElementById('age')) && isValid;
+        isValid = this.validateGender(document.getElementById('gender')) && isValid;
+        isValid = this.validateAadhar(document.getElementById('aadhar')) && isValid;
+        isValid = this.validateEmail(document.getElementById('email')) && isValid;
+        isValid = this.validatePhone(document.getElementById('phone')) && isValid;
+        isValid = this.validatePassword(document.getElementById('password')) && isValid;
+        isValid = this.checkPasswordMatch() && isValid; // This also updates confirm password feedback
+
+        return isValid;
+    }
+
+    handleSignup() {
+        if (!this.validateSignupForm()) {
+            this.showMessageBox('Please correct the errors in the form.', 'error');
+            return;
+        }
+
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const aadhar = document.getElementById('aadhar').value.replace(/\s/g, ''); // Store cleaned Aadhar
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.replace(/\D/g, ''); // Store cleaned phone
+        const password = document.getElementById('password').value;
+
+        // Check if email or aadhar or phone already exists
+        const userExists = this.users.some(
+            user => user.email === email || user.aadhar === aadhar || user.phone === phone
+        );
+
+        if (userExists) {
+            this.showMessageBox('An account with this email, Aadhar, or phone number already exists.', 'error');
+            return;
+        }
+
+        const newUser = {
+            id: Date.now(), // Simple unique ID
+            firstName,
+            lastName,
+            age: parseInt(age),
+            gender,
+            aadhar,
+            email,
+            phone,
+            password // In a real app, hash this password!
+        };
+
+        this.users.push(newUser);
+        localStorage.setItem('healthcareUsers', JSON.stringify(this.users));
+        this.showMessageBox('Registration successful! Please sign in.', 'success');
+        this.switchToLogin(); // Automatically switch to login form
+        document.getElementById('loginEmail').value = email; // Pre-fill login email
+        document.getElementById('loginPassword').value = ''; // Clear password field
+    }
+
+    validateLoginForm() {
+        let isValid = true;
+        isValid = this.validateEmail(document.getElementById('loginEmail')) && isValid;
+        isValid = this.validateField(document.getElementById('loginPassword'), document.getElementById('loginPasswordError'), 'Password is required.') && isValid;
+        return isValid;
+    }
+
+    handleLogin() {
+        if (!this.validateLoginForm()) {
+            this.showMessageBox('Please enter your login credentials.', 'error');
+            return;
+        }
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        const user = this.users.find(u => u.email === email && u.password === password); // In real app: check hashed password
+
+        if (user) {
+            this.loggedInUser = user;
+            sessionStorage.setItem('loggedInUser', JSON.stringify(user)); // Store logged-in user in session storage
+            this.showMessageBox(`Welcome back, ${user.firstName}! You are now logged in.`, 'success');
+            this.updateAuthButton(); // Update button to "Sign Out"
+            window.location.href = 'index.html'; // Redirect to the main page after successful login
+        } else {
+            this.showMessageBox('Invalid email or password. Do you want to create an account?', 'error', true, () => this.switchToSignup());
+        }
+    }
+
+    handleLogout() {
+        this.loggedInUser = null;
+        sessionStorage.removeItem('loggedInUser');
+        this.showMessageBox('You have been signed out.', 'success');
+        this.updateAuthButton(); // Update button back to "Sign In"
+        this.switchToLogin(); // Show the login form again
+        document.getElementById('loginFormElement').reset(); // Clear login form fields
+        // Optionally redirect to login page or home page
+        // window.location.href = 'login.html';
+    }
+
+    // New method to update the login/signup button text and behavior
+    updateAuthButton() {
+        const loginBtn = document.getElementById('loginBtn');
+        const loginFooter = document.querySelector('#loginForm .footer');
+        const signupFooter = document.querySelector('#signupForm .footer');
+
+        if (this.loggedInUser) {
+            loginBtn.textContent = 'Sign Out';
+            loginBtn.removeEventListener('click', this.handleLogin); // Remove old listener
+            loginBtn.addEventListener('click', () => this.handleLogout()); // Add logout listener
+
+            // Hide the "Don't have an account?" link when logged in
+            if (loginFooter) loginFooter.style.display = 'none';
+            if (signupFooter) signupFooter.style.display = 'none'; // Also hide for signup form if visible
+        } else {
+            loginBtn.textContent = 'Sign In';
+            loginBtn.removeEventListener('click', this.handleLogout); // Remove old listener
+            loginBtn.addEventListener('click', (e) => { // Re-add login listener
+                e.preventDefault(); // Prevent default form submission
+                this.handleLogin();
+            });
+
+            // Show the "Don't have an account?" link when logged out
+            if (loginFooter) loginFooter.style.display = 'block';
+            if (signupFooter) signupFooter.style.display = 'block';
+        }
+    }
+
+
+    switchToLogin() {
+        document.getElementById('signupForm').classList.remove('show');
+        document.getElementById('signupForm').classList.add('hide');
+        document.getElementById('loginForm').classList.remove('hide');
+        document.getElementById('loginForm').classList.add('show');
+        // Clear signup form errors when switching
+        document.getElementById('registrationForm').reset();
+        document.querySelectorAll('#registrationForm .error-message').forEach(el => el.textContent = '');
+        document.querySelectorAll('#registrationForm input, #registrationForm select').forEach(el => {
+            el.classList.remove('error', 'success');
+        });
+        document.getElementById('passwordStrength').style.display = 'none';
+        this.updateAuthButton(); // Ensure button is correct after switch
+    }
+
+    switchToSignup() {
+        document.getElementById('loginForm').classList.remove('show');
+        document.getElementById('loginForm').classList.add('hide');
+        document.getElementById('signupForm').classList.remove('hide');
+        document.getElementById('signupForm').classList.add('show');
+        // Clear login form errors when switching
+        document.getElementById('loginFormElement').reset();
+        document.querySelectorAll('#loginFormElement .error-message').forEach(el => el.textContent = '');
+        document.querySelectorAll('#loginFormElement input, #loginFormElement select').forEach(el => {
+            el.classList.remove('error', 'success');
+        });
+        this.updateAuthButton(); // Ensure button is correct after switch
+    }
+
+    // Message box functionality
+    showMessageBox(message, type, allowSignupPrompt = false, signupCallback = null) {
+        const messageBox = document.getElementById('messageBox');
+        messageBox.textContent = message;
+        messageBox.style.backgroundColor = type === 'error' ? 'rgba(244, 67, 54, 0.8)' : 'rgba(76, 175, 80, 0.8)';
+        messageBox.classList.add('show');
+
+        // Add a "Sign Up" option if allowed
+        if (allowSignupPrompt) {
+            const signupPrompt = document.createElement('p');
+            signupPrompt.innerHTML = 'Would you like to <a href="#" style="color: yellow; text-decoration: underline;" id="messageBoxSignupLink">create an account</a>?';
+            messageBox.appendChild(signupPrompt);
+
+            document.getElementById('messageBoxSignupLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                messageBox.classList.remove('show');
+                if (signupCallback) signupCallback();
+            }, { once: true }); // Ensure this listener only fires once
+        }
+
+        setTimeout(() => {
+            messageBox.classList.remove('show');
+            // Remove signup prompt if it was added
+            if (allowSignupPrompt) {
+                const signupPrompt = messageBox.querySelector('#messageBoxSignupLink').parentNode;
+                if (signupPrompt) signupPrompt.remove();
+            }
+        }, 3000); // Hide after 3 seconds
+    }
+}
+
+// Initialize the authentication system
+document.addEventListener('DOMContentLoaded', () => {
+    new HealthcareAuth();
+});
+
+// Expose these global functions for onclick attributes in HTML
+window.togglePassword = togglePassword;
+window.switchToLogin = () => new HealthcareAuth().switchToLogin();
+window.switchToSignup = () => new HealthcareAuth().switchToSignup();
+    </script>
+</body>
+</html>

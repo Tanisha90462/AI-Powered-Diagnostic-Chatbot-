@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthBot - Rural Healthcare Assistant</title>
+    <style>
+        /* Your existing CSS... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            flex-grow: 1;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        /* Language selector and its custom arrow CSS removed */
+        .language-selector, .language-selector::after {
+            display: none;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 30px;
+        }
+
+        .header-logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .profile-icon, .logout-btn, .login-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-icon:hover, .logout-btn:hover, .login-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .logout-btn, .login-btn {
+            font-size: 0.9em;
+            border-radius: 15px;
+            padding: 8px 15px;
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .logout-btn:hover, .login-btn:hover {
+            background-color: rgba(255,255,255,0.4);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 500px; /* Adjust as needed */
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .bot-message {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #2196f3;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4CAF50;
+        }
+
+        .send-btn, .voice-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover, .voice-btn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        .voice-btn.recording {
+            background: #f44336;
+            animation: pulse 1s infinite;
+        }
+
+        .quick-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-option {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            color: #2e7d32;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .quick-option:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .symptom-checker {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .symptom-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .symptom-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .symptom-item:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .symptom-item.selected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .diagnosis-report {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid #ff9800;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .severity-low { background: #e8f5e8; color: #2e7d32; }
+        .severity-medium { background: #fff3e0; color: #f57c00; }
+        .severity-high { background: #ffebee; color: #d32f2f; }
+
+        .referral-section {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 18px;
+            max-width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .emergency-alert {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border: 2px solid #f44336;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #c62828;
+            font-weight: bold;
+        }
+        .info-card {
+            background: #f0f8ff;
+            border: 1px solid #a0c4ff; 
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #2196f3; 
+        }
+        .info-card ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .info-card li {
+            margin-bottom: 5px;
+        }
+        .info-card strong {
+            color: #1976d2; 
+        }
+        .info-card a {
+            color: #0d47a1; 
+            text-decoration: none;
+        }
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 5px;
+                border-radius: 15px;
+                min-height: 95vh;
+            }
+            
+            .header {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .header-left, .header-right {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 10px;
+                border-radius: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+                text-align: center;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .symptom-list {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1 id="headerTitle">HealthBot</h1>
+            </div>
+            
+            <p id="headerSubtitle">AI-Powered Rural Healthcare Assistant</p>
+
+            <div class="header-right">
+                </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div class="message bot-message">
+                    <strong>🏥 HealthBot:</strong> <span id="initialGreeting">Hello! I'm your AI healthcare assistant. I can help assess your symptoms, provide prevention tips, and help you find nearby doctors. How are you feeling today?</span>
+                    
+                    <div class="quick-options">
+                        <div class="quick-option" onclick="selectQuickOption('fever')">🤒 Fever</div>
+                        <div class="quick-option" onclick="selectQuickOption('headache')">🤕 Headache</div>
+                        <div class="quick-option" onclick="selectQuickOption('stomachache')">🤢 Stomach Pain</div>
+                        <div class="quick-option" onclick="selectQuickOption('cough')">😷 Cough</div>
+                        <div class="quick-option" onclick="selectQuickOption('other')">➕ Other Symptoms</div>
+                        <div class="quick-option" onclick="selectQuickOption('prevention')">✨ Prevention Tips</div>
+                        <div class="quick-option" onclick="selectQuickOption('hospitals')">🏥 Nearby Hospitals</div>
+                        <div class="quick-option" onclick="selectQuickOption('contact_doctors')">👨‍⚕️ Contact Doctors</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <input type="text" class="input-field" id="messageInput" placeholder="Describe your symptoms or ask a question..." maxlength="500">
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
+                    <button class="send-btn" onclick="sendMessage()">📤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textStrings = {
+            headerTitle: "HealthBot",
+            headerSubtitle: "AI-Powered Rural Healthcare Assistant",
+            placeholder: "Describe your symptoms or ask a question...",
+            greeting: "Hello! I'm your AI healthcare assistant. I can help assess your symptoms, provide prevention tips, and help you find nearby doctors. How are you feeling today?",
+            quickOptions: {
+                fever: "🤒 Fever",
+                headache: "🤕 Headache",
+                stomachache: "🤢 Stomach Pain",
+                cough: "😷 Cough",
+                other: "➕ Other Symptoms",
+                prevention: "✨ Prevention Tips",
+                hospitals: "🏥 Nearby Hospitals",
+                contact_doctors: "👨‍⚕️ Contact Doctors"
+            },
+            listening: "Listening...",
+            stoppedListening: "Stopped listening.",
+            voiceError: "Voice input error: ",
+            typeOrSpeak: ". Please try typing or speak clearly.",
+            analysisPrompt: "Please select at least one symptom for analysis.",
+            symptomCheckerTitle: "🔍 Symptom Checker",
+            symptomCheckerInstruction: "Please select all symptoms you're experiencing:",
+            analyzeBtn: "Analyze Symptoms",
+            preliminaryReportTitle: "🏥 Preliminary Diagnostic Report",
+            severity: "Severity:",
+            reportedSymptoms: "📋 Reported Symptoms:",
+            possibleConditions: "🔍 Possible Conditions:",
+            recommendations: "💡 Immediate Recommendations:",
+            emergencyUrgent: "⚠️ URGENT: Some symptoms suggest immediate medical attention is required. Please contact emergency services or visit the nearest hospital immediately.",
+            recommendedProviders: "👨‍⚕️ Recommended Healthcare Providers",
+            emergencyCareOptions: "Based on your symptoms, here are emergency care options:",
+            nearbyDoctors: "Here are nearby doctors who can help:",
+            specialization: "Specialization:",
+            location: "Location:",
+            distance: "Distance:",
+            phone: "Phone:",
+            hours: "Hours:",
+            emergencyContacts: "📞 Emergency Contacts:",
+            ambulance: "Ambulance:",
+            medicalEmergency: "Medical Emergency:",
+            localHospital: "Local Hospital:",
+            anythingElse: "Is there anything else I can help you with today? You can also ask me about preventive care, medication reminders, or health tips.",
+            welcome: "You're welcome! Take care of your health. If you need any assistance in the future, I'm here to help. Stay healthy! 🌟",
+            emergencyBotResponse: `
+                <div class="emergency-alert">
+                    🚨 EMERGENCY ASSISTANCE<br>
+                    Immediate help: Call 108 (Ambulance)<br>
+                    Medical Emergency: 102<br>
+                    Local Hospital: +91-20-1234-5678<br><br>
+                    If this is a life-threatening emergency, please call immediately!
+                </div>`,
+            noMedicationAdvice: "⚠️ I cannot recommend specific medications. Please consult with a qualified doctor before taking any medicine. Would you like me to help you find nearby healthcare providers?",
+            preventiveCareTips: `
+                <div class="info-card">
+                    <h3>✨ General Prevention & Wellness Tips</h3>
+                    <p>Maintaining good health involves several key practices:</p>
+                    <ul>
+                        <li><strong>Balanced Diet:</strong> Eat diverse fruits, vegetables, whole grains, and lean proteins. Limit processed foods and sugary drinks.</li>
+                        <li><strong>Regular Exercise:</strong> Aim for at least 30 minutes of moderate activity most days (walking, jogging, cycling).</li>
+                        <li><strong>Adequate Sleep:</strong> Get 7-9 hours of quality sleep per night for physical and mental restoration.</li>
+                        <li><strong>Hydration:</strong> Drink plenty of water throughout the day.</li>
+                        <li><strong>Stress Management:10:24:10 PM IST</strong> Practice relaxation techniques like meditation or deep breathing.</li>
+                        <li><strong>Hygiene:</strong> Wash hands frequently, especially before eating and after coughing/sneezing.</li>
+                        <li><strong>Vaccinations:</strong> Stay up-to-date with recommended vaccinations.</li>
+                        <li><strong>Regular Check-ups:</strong> Don't skip annual physicals and screenings.</li>
+                        <li><strong>Avoid Harmful Habits:</strong> Limit alcohol and avoid smoking/illicit drugs.</li>
+                        <li><strong>Maintain Social Connections:</strong> Strong social ties contribute to mental well-being.</li>
+                    </ul>
+                    <p><strong>Remember:</strong> These are general guidelines. Consult your doctor for personalized prevention strategies.</p>
+                </div>`,
+            medicationDisclaimer: `
+                <div class="info-card" style="background: #fff3e0; border-color: #ff9800; color: #e65100;">
+                    <h3>⚠️ Important Note on Medications</h3>
+                    <p>As an AI, I **cannot provide specific medication recommendations or dosages**. Medications should only be prescribed or recommended by a qualified medical professional after a proper diagnosis.</p>
+                    <p><strong>For mild, common ailments (e.g., simple headache, general aches):</strong></p>
+                    <ul>
+                        <li>Over-the-counter pain relievers (like Paracetamol or Ibuprofen) are commonly used.</li>
+                        <li>For coughs, traditional remedies like honey and ginger can provide relief.</li>
+                    </ul>
+                    <p><strong>Always:</strong></p>
+                    <ul>
+                        <li><strong>Read labels carefully.</strong></li>
+                        <li><strong>Consult a pharmacist or doctor before taking any medicine,</strong> especially if symptoms persist or worsen, if you have other medical conditions, or are pregnant/breastfeeding.</li>
+                        <li>Taking the wrong medication or dosage can be harmful.</li>
+                    </ul>
+                    <p>Your health is paramount; always seek professional medical advice.</p>
+                </div>`,
+            contactDoctorsInfo: `
+                <div class="info-card">
+                    <h3>👨‍⚕️ How to Contact Doctors Online (Telemedicine)</h3>
+                    <p>For direct online consultation with doctors, you need to use dedicated telemedicine platforms. These platforms allow you to search by specialty, view doctor profiles, and book virtual appointments (video/audio calls).</p>
+                    <p><strong>Popular Telemedicine Platforms in India:</strong></p>
+                    <ul>
+                        <li><strong>Practo:</strong> <a href='https://www.practo.com/consult' target='_blank'>www.practo.com/consult</a> (Leading platform for online doctor consultation and appointments.)</li>
+                        <li><strong>Apollo 24|7:</strong> <a href='https://www.apollo247.com/online-doctor-consultation' target='_blank'>www.apollo247.com/online-doctor-consultation</a> (Online consultations from Apollo Hospitals' network.)</li>
+                        <li><strong>eSanjeevani (Govt. of India):</strong> <a href='https://esanjeevani.mohfw.gov.in/' target='_blank'>esanjeevani.mohfw.gov.in</a> (Free telemedicine service, especially beneficial for rural areas.)</li>
+                    </ul>
+                    <p>Always ensure you have a stable internet connection for video calls. These platforms are equipped for secure communication.</p>
+                </div>`,
+            unclearResponse: "I'm sorry, I didn't quite understand that. Could you please rephrase or select an option from below?",
+        };
+
+        let conversationState = 'initial'; 
+        let userSymptoms = [];
+        let isRecording = false;
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false; 
+            recognition.interimResults = false; 
+            recognition.lang = 'en-IN';
+
+            recognition.onstart = () => {
+                const voiceBtn = document.getElementById('voiceBtn');
+                voiceBtn.classList.add('recording');
+                voiceBtn.innerHTML = '⏹️';
+                isRecording = true;
+                document.getElementById('messageInput').placeholder = textStrings.listening;
+                addMessage('bot', `🎤 ${textStrings.listening} Please describe your symptoms clearly.`);
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('messageInput').value = transcript;
+                addMessage('user', transcript); 
+                sendMessage(); 
+            };
+
+            recognition.onend = () => {
+                const voiceBtn = document.getElementById('voiceBtn');
+                voiceBtn.classList.remove('recording');
+                voiceBtn.innerHTML = '🎤';
+                isRecording = false;
+                document.getElementById('messageInput').placeholder = textStrings.placeholder;
+                if (document.getElementById('messageInput').value === "") { 
+                   addMessage('bot', `🎤 ${textStrings.stoppedListening}`);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                addMessage('bot', `🎤 ${textStrings.voiceError}${event.error}${textStrings.typeOrSpeak}`);
+                const voiceBtn = document.getElementById('voiceBtn');
+                voiceBtn.classList.remove('recording');
+                voiceBtn.innerHTML = '🎤';
+                isRecording = false;
+                document.getElementById('messageInput').placeholder = textStrings.placeholder;
+            };
+        } else {
+            console.warn("Web Speech API not supported in this browser.");
+            document.getElementById('voiceBtn').style.display = 'none'; 
+        }
+       
+        const medicalKnowledge = {
+            fever: {
+                symptoms: ['high temperature', 'chills', 'sweating', 'headache', 'muscle aches'],
+                severity: 'medium',
+                possibleCauses: ['Viral infection', 'Bacterial infection', 'Heat exhaustion'],
+                recommendations: ['Rest and hydration', 'Monitor temperature', 'Seek medical attention if fever exceeds 102°F or persists']
+            },
+            headache: {
+                symptoms: ['head pain', 'sensitivity to light', 'nausea', 'dizziness'],
+                severity: 'low',
+                possibleCauses: ['Tension', 'Dehydration', 'Stress', 'Migraine'],
+                recommendations: ['Rest in a quiet, dark room', 'Stay hydrated', 'Apply cold compress to forehead', 'Avoid triggers if known']
+            },
+            stomachache: {
+                symptoms: ['abdominal pain', 'nausea', 'vomiting', 'diarrhea', 'bloating'],
+                severity: 'medium',
+                possibleCauses: ['Food poisoning', 'Gastritis', 'Indigestion', 'Viral gastroenteritis'],
+                recommendations: ['Light, bland diet (e.g., rice, toast)', 'Stay hydrated with ORS or water', 'Avoid spicy, oily, or dairy foods', 'Seek medical attention if severe or prolonged']
+            },
+            cough: {
+                symptoms: ['persistent cough', 'sore throat', 'chest congestion', 'difficulty breathing'],
+                severity: 'medium',
+                possibleCauses: ['Common cold', 'Bronchitis', 'Allergies', 'Asthma'],
+                recommendations: ['Warm salt water gargle', 'Stay hydrated (warm fluids)', 'Avoid irritants (smoke, dust)', 'Use a humidifier', 'Seek medical attention if difficulty breathing or cough persists']
+            },
+            chest_pain: {
+                symptoms: ['chest pain', 'shortness of breath', 'arm pain', 'sweating', 'nausea'],
+                severity: 'high',
+                possibleCauses: ['Heart attack', 'Angina', 'Pericarditis', 'Pneumonia', 'Pleurisy'],
+                recommendations: ['**IMMEDIATE MEDICAL ATTENTION REQUIRED.** Call emergency services (108/112) or go to the nearest hospital immediately. Do NOT delay.']
+            },
+            breathing: {
+                symptoms: ['difficulty breathing', 'shortness of breath', 'wheezing', 'rapid breathing', 'bluish lips/fingers'],
+                severity: 'high',
+                possibleCauses: ['Asthma attack', 'Anaphylaxis', 'Pneumonia', 'COPD exacerbation', 'Heart failure'],
+                recommendations: ['**IMMEDIATE MEDICAL ATTENTION REQUIRED.** Call emergency services (108/112) or go to the nearest hospital immediately. Do NOT delay.']
+            },
+            nausea: { symptoms: ['feeling sick', 'upset stomach'], severity: 'low', possibleCauses: ['Indigestion', 'Motion sickness'], recommendations: ['Ginger tea', 'Small, frequent meals'] },
+            dizziness: { symptoms: ['lightheadedness', 'unsteadiness'], severity: 'low', possibleCauses: ['Dehydration', 'Low blood sugar'], recommendations: ['Sit down, hydrate, eat a snack'] },
+            fatigue: { symptoms: ['tiredness', 'lack of energy'], severity: 'low', possibleCauses: ['Lack of sleep', 'Stress'], recommendations: ['Rest, healthy diet, manage stress'] }
+        };
+
+        const doctorDatabase = [
+            {
+                name: "Dr. Rajesh Kumar",
+                specialization: "General Medicine",
+                location: "District Hospital, Pune",
+                distance: "25 km",
+                phone: "+91-98765-43210",
+                availability: "Mon-Sat, 9 AM - 5 PM"
+            },
+            {
+                name: "Dr. Priya Sharma",
+                specialization: "Internal Medicine",
+                location: "City Medical Center, Mumbai",
+                distance: "45 km",
+                phone: "+91-87654-32109",
+                availability: "Mon-Fri, 10 AM - 6 PM"
+            },
+            {
+                name: "Dr. Amit Patel",
+                specialization: "Emergency Medicine",
+                location: "Emergency Care Hospital, Nashik",
+                distance: "35 km",
+                phone: "+91-76543-21098",
+                availability: "24/7 Emergency"
+            },
+            {
+                name: "Dr. Geeta Rao",
+                specialization: "Pediatrics",
+                location: "Child Health Clinic, Rural Area 1",
+                distance: "10 km",
+                phone: "+91-70000-11111",
+                availability: "Mon, Wed, Fri: 4 PM - 7 PM"
+            },
+             {
+                name: "Dr. Sunil Yadav",
+                specialization: "General Practitioner",
+                location: "Community Health Center, Rural Area 2",
+                distance: "15 km",
+                phone: "+91-99887-22222",
+                availability: "Tue, Thu, Sat: 10 AM - 2 PM"
+            }
+        ];
+
+        function addMessage(sender, htmlContent) {
+            const messagesDiv = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${sender}-message`);
+            messageElement.innerHTML = htmlContent;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+        }
+
+        function showTyping() {
+            const messagesDiv = document.getElementById('messages');
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator');
+            typingIndicator.id = 'typingIndicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messagesDiv.appendChild(typingIndicator);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function selectQuickOption(option) {
+            let userMessageText = '';
+            
+            switch(option) {
+                case 'fever':
+                case 'headache':
+                case 'stomachache':
+                case 'cough':
+                    userMessageText = `I have ${textStrings.quickOptions[option].toLowerCase().replace('🤒 ', '').replace('🤕 ', '').replace('🤢 ', '').replace('😷 ', '')}`;
+                    addMessage('user', userMessageText);
+                    assessSymptom(option);
+                    break;
+                case 'other':
+                    userMessageText = textStrings.quickOptions.other.replace('➕ ', '');
+                    addMessage('user', userMessageText);
+                    showSymptomChecker();
+                    break;
+                case 'prevention':
+                    userMessageText = textStrings.quickOptions.prevention.replace('✨ ', '');
+                    addMessage('user', userMessageText);
+                    showTyping();
+                    setTimeout(() => {
+                        hideTyping();
+                        addMessage('bot', textStrings.preventiveCareTips);
+                        addMessage('bot', textStrings.anythingElse);
+                    }, 1500);
+                    break;
+                case 'hospitals':
+                    userMessageText = textStrings.quickOptions.hospitals.replace('🏥 ', '');
+                    addMessage('user', userMessageText);
+                    showDoctorReferrals('medium'); 
+                    break;
+                case 'contact_doctors':
+                    userMessageText = textStrings.quickOptions.contact_doctors.replace('👨‍⚕️ ', '');
+                    addMessage('user', userMessageText);
+                    showTyping();
+                    setTimeout(() => {
+                        hideTyping();
+                        addMessage('bot', textStrings.contactDoctorsInfo);
+                        addMessage('bot', textStrings.anythingElse);
+                    }, 1500);
+                    break;
+                default:
+                    addMessage('user', `I'd like to know about ${option}`);
+                    processUserInput(option);
+                    break;
+            }
+        }
+
+        function showSymptomChecker() {
+            userSymptoms = []; // Reset selected symptoms
+            const symptomsHtml = `
+                <div class="symptom-checker">
+                    <strong>${textStrings.symptomCheckerTitle}</strong>
+                    <p>${textStrings.symptomCheckerInstruction}</p>
+                    <div class="symptom-list">
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'fever')">${textStrings.quickOptions.fever.replace('🤒 ', '')}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'headache')">${textStrings.quickOptions.headache.replace('🤕 ', '')}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'cough')">${textStrings.quickOptions.cough.replace('😷 ', '')}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'nausea')">${textStrings.quickOptions.nausea || 'Nausea'}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'dizziness')">${textStrings.quickOptions.dizziness || 'Dizziness'}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'fatigue')">${textStrings.quickOptions.fatigue || 'Fatigue'}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'chest_pain')">${textStrings.quickOptions.chest_pain || 'Chest Pain'}</div>
+                        <div class="symptom-item" onclick="toggleSymptom(this, 'breathing')">${textStrings.quickOptions.breathing || 'Breathing Issues'}</div>
+                        </div>
+                    <button onclick="analyzeSelectedSymptoms()" style="margin-top: 15px; background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">${textStrings.analyzeBtn}</button>
+                </div>
+            `;
+            
+            addMessage('bot', symptomsHtml);
+        }
+
+        function toggleSymptom(element, symptom) {
+            element.classList.toggle('selected');
+            if (element.classList.contains('selected')) {
+                if (!userSymptoms.includes(symptom)) {
+                    userSymptoms.push(symptom);
+                }
+            } else {
+                userSymptoms = userSymptoms.filter(s => s !== symptom);
+            }
+        }
+
+        function analyzeSelectedSymptoms() {
+            if (userSymptoms.length === 0) {
+                addMessage('bot', textStrings.analysisPrompt);
+                return;
+            }
+            
+            showTyping();
+            setTimeout(() => {
+                generateDiagnosticReport(userSymptoms);
+            }, 2000);
+        }
+
+        function assessSymptom(symptom) {
+            userSymptoms = [symptom]; 
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                const followUpQuestions = [
+                    `How long have you been experiencing this?`,
+                    "On a scale of 1-10, how would you rate the intensity?",
+                    "Are there any other symptoms accompanying this, like fever or body aches?"
+                ];
+                
+                const randomQuestion = followUpQuestions[Math.floor(Math.random() * followUpQuestions.length)];
+                addMessage('bot', `I understand you have ${symptom}. ${randomQuestion}`);
+                y
+                setTimeout(() => {
+                    generateDiagnosticReport([symptom]);
+                }, 3000);
+            }, 1500);
+        }
+
+        function generateDiagnosticReport(symptoms) {
+            hideTyping();
+            
+            let highestSeverity = 'low';
+            let relevantKnowledge = medicalKnowledge.headache; 
+
+            const emergencySymptoms = ['chest_pain', 'breathing'];
+            const hasEmergency = symptoms.some(s => emergencySymptoms.includes(s));
+            
+            if (hasEmergency) {
+                highestSeverity = 'high';
+                relevantKnowledge = medicalKnowledge.chest_pain; 
+            } else {
+                for (const symptom of symptoms) {
+                    if (medicalKnowledge[symptom]) {
+                        relevantKnowledge = medicalKnowledge[symptom];
+                        if (relevantKnowledge.severity === 'medium') {
+                            highestSeverity = 'medium'; 
+                        }
+                        break;
+                    }
+                }
+                if (symptoms.length > 2 && highestSeverity === 'low') {
+                    highestSeverity = 'medium';
+                }
+            }
+
+            const reportHtml = `
+                <div class="diagnosis-report">
+                    <h3>${textStrings.preliminaryReportTitle}</h3>
+                    <div class="severity-indicator severity-${highestSeverity}">
+                        ${textStrings.severity} ${highestSeverity.toUpperCase()}
+                    </div>
+                    
+                    <h4>${textStrings.reportedSymptoms}</h4>
+                    <ul>
+                        ${symptoms.map(s => `<li>${s.replace('_', ' ')}</li>`).join('')}
+                    </ul>
+                    
+                    <h4>${textStrings.possibleConditions}</h4>
+                    <ul>
+                        ${relevantKnowledge.possibleCauses.map(cause => `<li>${cause}</li>`).join('')}
+                    </ul>
+                    
+                    <h4>${textStrings.recommendations}</h4>
+                    <ul>
+                        ${relevantKnowledge.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                    
+                    ${hasEmergency ? textStrings.emergencyUrgent : ''}
+                </div>
+            `;
+            
+            addMessage('bot', reportHtml);
+            
+            setTimeout(() => {
+                showDoctorReferrals(highestSeverity);
+            }, 2000);
+        }
+
+        function showDoctorReferrals(severity) {
+            const urgentCare = severity === 'high';
+            let relevantDoctors = [];
+
+            if (urgentCare) {
+                relevantDoctors = doctorDatabase.filter(doc => doc.specialization.includes('Emergency') || doc.location.includes('Hospital'));
+                if (relevantDoctors.length === 0) {
+                    relevantDoctors = doctorDatabase.filter(doc => doc.location.includes('Hospital')); // Fallback
+                }
+            } else {
+
+                relevantDoctors = doctorDatabase.filter(doc => doc.specialization.includes('General') || doc.specialization.includes('Internal')).slice(0, 3);
+                if (relevantDoctors.length < 3) {
+                     relevantDoctors = doctorDatabase.slice(0, 3); 
+                }
+            }
+
+            if (relevantDoctors.length === 0) {
+                 addMessage('bot', `<strong>${textStrings.recommendedProviders}</strong><p>Currently, I couldn't find specific doctor referrals for your area. Please use the emergency contacts or search online.</p>`);
+            } else {
+                const referralHtml = `
+                    <div class="referral-section">
+                        <h3>${textStrings.recommendedProviders}</h3>
+                        <p>${urgentCare ? textStrings.emergencyCareOptions : textStrings.nearbyDoctors}</p>
+                        
+                        ${relevantDoctors.map(doctor => `
+                            <div class="doctor-card">
+                                <h4>${doctor.name}</h4>
+                                <p><strong>${textStrings.specialization}</strong> ${doctor.specialization}</p>
+                                <p><strong>${textStrings.location}</strong> ${doctor.location} (${doctor.distance})</p>
+                                <p><strong>${textStrings.phone}</strong> ${doctor.phone}</p>
+                                <p><strong>${textStrings.hours}</strong> ${doctor.availability}</p>
+                            </div>
+                        `).join('')}
+                        
+                        <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px;">
+                            <strong>${textStrings.emergencyContacts}</strong><br>
+                            ${textStrings.ambulance} 108<br>
+                            ${textStrings.medicalEmergency} 102<br>
+                            ${textStrings.localHospital} +91-20-1234-5678 (Example)<br>
+                            General Emergency: 112 (All-in-one emergency number in India)<br>
+                            Police: 100<br>
+                            Fire: 101
+                        </div>
+                    </div>
+                `;
+                addMessage('bot', referralHtml);
+            }
+            
+            addMessage('bot', textStrings.anythingElse);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                processUserInput(message);
+            }
+        }
+
+        function processUserInput(message) {
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
+                    addMessage('bot', textStrings.welcome);
+                } else if (lowerMessage.includes('emergency') || lowerMessage.includes('urgent') || lowerMessage.includes('help me')) {
+                    addMessage('bot', textStrings.emergencyBotResponse);
+                } else if (lowerMessage.includes('medicine') || lowerMessage.includes('medication') || lowerMessage.includes('drugs') || lowerMessage.includes('prescription')) {
+                    addMessage('bot', textStrings.medicationDisclaimer);
+                } else if (lowerMessage.includes('preventive care') || lowerMessage.includes('health tips') || lowerMessage.includes('wellness') || lowerMessage.includes('stay healthy')) {
+                    addMessage('bot', textStrings.preventiveCareTips);
+                    addMessage('bot', textStrings.anythingElse);
+                } else if (lowerMessage.includes('hospital') || lowerMessage.includes('doctor near me') || lowerMessage.includes('find doctor') || lowerMessage.includes('nearby clinics')) {
+                    showDoctorReferrals('low');
+                } else if (lowerMessage.includes('contact doctor') || lowerMessage.includes('online doctor') || lowerMessage.includes('talk to doctor') || lowerMessage.includes('telemedicine')) {
+                    addMessage('bot', textStrings.contactDoctorsInfo);
+                    addMessage('bot', textStrings.anythingElse);
+                }
+                else if (lowerMessage.includes('fever') || lowerMessage.includes('headache') || lowerMessage.includes('stomach') || lowerMessage.includes('cough') || lowerMessage.includes('chest pain') || lowerMessage.includes('breathing')) {
+                     let symptomKey = '';
+                     if (lowerMessage.includes('fever')) symptomKey = 'fever';
+                     else if (lowerMessage.includes('headache')) symptomKey = 'headache';
+                     else if (lowerMessage.includes('stomach')) symptomKey = 'stomachache';
+                     else if (lowerMessage.includes('cough')) symptomKey = 'cough';
+                     else if (lowerMessage.includes('chest pain')) symptomKey = 'chest_pain';
+                     else if (lowerMessage.includes('breathing')) symptomKey = 'breathing';
+
+                     if (symptomKey) {
+                         assessSymptom(symptomKey);
+                     } else {
+                         addMessage('bot', textStrings.unclearResponse);
+                     }
+                }
+                else {
+                    addMessage('bot', textStrings.unclearResponse);
+                    // Manually re-offer quick options as a guiding mechanism
+                    setTimeout(() => {
+                        const messagesDiv = document.getElementById('messages');
+                        messagesDiv.innerHTML += `
+                            <div class="message bot-message">
+                                <strong>🏥 HealthBot:</strong> How are you feeling today?
+                                <div class="quick-options">
+                                    <div class="quick-option" onclick="selectQuickOption('fever')">🤒 Fever</div>
+                                    <div class="quick-option" onclick="selectQuickOption('headache')">🤕 Headache</div>
+                                    <div class="quick-option" onclick="selectQuickOption('stomachache')">🤢 Stomach Pain</div>
+                                    <div class="quick-option" onclick="selectQuickOption('cough')">😷 Cough</div>
+                                    <div class="quick-option" onclick="selectQuickOption('other')">➕ Other Symptoms</div>
+                                    <div class="quick-option" onclick="selectQuickOption('prevention')">✨ Prevention Tips</div>
+                                    <div class="quick-option" onclick="selectQuickOption('hospitals')">🏥 Nearby Hospitals</div>
+                                    <div class="quick-option" onclick="selectQuickOption('contact_doctors')">👨‍⚕️ Contact Doctors</div>
+                                </div>
+                            </div>`;
+                        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    }, 1000);
+                }
+            }, 1500);
+        }
+
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function toggleVoice() {
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial setup for the bot interface upon loading
+        });
+
+        // Dummy login/logout/profile functions (purely illustrative, no complex backend)
+        function handleLogin() {
+            alert("Login functionality to be implemented. This is a placeholder.");
+        }
+
+        function handleLogout() {
+            alert("Logout functionality to be implemented. This is a placeholder.");
+        }
+
+        function showProfile() {
+            alert("User Profile functionality to be implemented. This is a placeholder.");
+        }
+    </script>
+</body>
+</html>
