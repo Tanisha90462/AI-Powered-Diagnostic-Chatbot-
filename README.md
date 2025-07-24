@@ -5,7 +5,7 @@ An AI-powered healthcare chatbot designed for rural and underserved communities.
 | Name             | Roll No.          | Registration No.      |
 |------------------|-------------------|-----------------------|
 | Himanshu Singh   |23CSE069           | 23UG010154            |
-| Tapas Kumar Rout | 23CSE098          | 23UG0183             |
+| Tapas Kumar Rout | 23CSE098          | 23UG010183             |
 | P.Tanisha Patra  | 23CSE027          | 23UG010112            |
 | Deepika Nahak    | 23CSEDS003        | 23UG010969            |
 
